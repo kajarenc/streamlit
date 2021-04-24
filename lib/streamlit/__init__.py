@@ -128,6 +128,7 @@ empty = _main.empty
 error = _main.error
 exception = _main.exception
 file_uploader = _main.file_uploader
+foo = _main.foo
 graphviz_chart = _main.graphviz_chart
 header = _main.header
 help = _main.help

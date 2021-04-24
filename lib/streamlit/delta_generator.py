@@ -33,6 +33,7 @@ from streamlit.elements.balloons import BalloonsMixin
 from streamlit.elements.button import ButtonMixin
 from streamlit.elements.markdown import MarkdownMixin
 from streamlit.elements.text import TextMixin
+from streamlit.elements.foo import FooMixin
 from streamlit.elements.alert import AlertMixin
 from streamlit.elements.json import JsonMixin
 from streamlit.elements.doc_string import HelpMixin
@@ -90,6 +91,7 @@ class DeltaGenerator(
     EmptyMixin,
     ExceptionMixin,
     FileUploaderMixin,
+    FooMixin,
     GraphvizMixin,
     HelpMixin,
     IframeMixin,
