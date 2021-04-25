@@ -45,6 +45,7 @@ import "streamlit/proto/Radio.proto";
 import "streamlit/proto/Selectbox.proto";
 import "streamlit/proto/Slider.proto";
 import "streamlit/proto/Text.proto";
+import "streamlit/proto/Foo.proto";
 import "streamlit/proto/TextArea.proto";
 import "streamlit/proto/TextInput.proto";
 import "streamlit/proto/TimeInput.proto";
@@ -86,13 +87,14 @@ message Element {
     Selectbox selectbox = 25;
     Slider slider = 21;
     Text text = 1;
+    Foo foo = 39;
     TextArea text_area = 22;
     TextInput text_input = 24;
     TimeInput time_input = 26;
     VegaLiteChart vega_lite_chart = 10;
     Video video = 14;
 
-    // Next ID: 39
+    // Next ID: 40
   }
 
   reserved 9;

@@ -44,6 +44,7 @@ import {
   PlotlyChart as PlotlyChartProto,
   Progress as ProgressProto,
   Text as TextProto,
+  Foo as FooProto,
   Video as VideoProto,
 } from "src/autogen/proto"
 
@@ -68,6 +69,7 @@ import Json from "src/components/elements/Json/"
 import Markdown from "src/components/elements/Markdown/"
 import Table from "src/components/elements/Table/"
 import Text from "src/components/elements/Text/"
+import Foo from "src/components/elements/Foo/"
 import {
   ComponentInstance,
   ComponentRegistry,
@@ -448,7 +450,8 @@ class Block extends PureComponent<Props> {
 
       case "text":
         return <Text width={width} element={node.element.text as TextProto} />
-
+      case "foo":
+        return <Foo element={node.element.foo as FooProto} />
       case "vegaLiteChart":
         return (
           <VegaLiteChart

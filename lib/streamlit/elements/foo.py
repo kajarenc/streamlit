@@ -9,7 +9,7 @@ class FooMixin:
     def foo(self, body):
         # TODO Add docstring
         foo_proto = FooProto()
-        foo_proto.body = clean_text(body)
+        foo_proto.body = clean_text(body[::-1])
         return self.dg._enqueue("foo", foo_proto)
 
     @property
