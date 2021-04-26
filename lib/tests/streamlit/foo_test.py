@@ -13,16 +13,8 @@ class FooTest(testutil.DeltaGeneratorTestCase):
     def test_foo(self):
         st.foo("abcd")
 
-        c = self.get_delta_from_queue().new_element.foo
-        self.assertEqual(c.body, "dcba")
-
-
-class StreamlitFooTest(unittest.TestCase):
-    def test_string(self):
-        """Test st.foo with a string."""
-        with patch("streamlit.delta_generator.DeltaGenerator.foo") as p:
-            st.foo("somestring")
-            p.assert_called_once()
+        proto = self.get_delta_from_queue().new_element.foo
+        self.assertEqual(proto.body, "dcba")
 
     def test_sidebar(self):
         """Test st.foo in the sidebar."""
