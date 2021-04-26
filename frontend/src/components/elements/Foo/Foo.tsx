@@ -9,5 +9,5 @@ export interface FooProps {
  * Functional element representing reversed text.
  */
 export default function Foo({ element }: FooProps): ReactElement {
-  return <div>{element.body}</div>
+  return <div data-testid="stFoo">{element.body}</div>
 }
