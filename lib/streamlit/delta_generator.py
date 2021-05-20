@@ -416,6 +416,10 @@ class DeltaGenerator(
             raise StreamlitAPIException(
                 "Columns may not be nested inside other columns."
             )
+        if block_type == "column" and "card" in parent_block_types:
+            raise StreamlitAPIException(
+                "Columns may not be nested inside cards."
+            )
         if block_type == "expandable" and block_type in parent_block_types:
             raise StreamlitAPIException(
                 "Expanders may not be nested inside other expanders."
