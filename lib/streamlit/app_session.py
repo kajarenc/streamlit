@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
+import urllib
 import uuid
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, Optional, Dict
+from urllib.parse import unquote
 from streamlit.uploaded_file_manager import UploadedFileManager
 
 import tornado.gen
@@ -31,11 +34,17 @@ from streamlit.metrics_util import Installation
 from streamlit.proto.ClientState_pb2 import ClientState
 from streamlit.proto.ForwardMsg_pb2 import ForwardMsg
 from streamlit.proto.GitInfo_pb2 import GitInfo
-from streamlit.proto.NewSession_pb2 import Config, CustomThemeConfig, UserInfo
+from streamlit.proto.NewSession_pb2 import (
+    Config,
+    CustomThemeConfig,
+    NewSession,
+    UserInfo,
+)
 from streamlit.session_data import SessionData
 from streamlit.session_data import generate_new_id
 from streamlit.script_request_queue import RerunData, ScriptRequest, ScriptRequestQueue
 from streamlit.script_runner import ScriptRunner, ScriptRunnerEvent
+from streamlit.source_util import get_pages, page_name
 from streamlit.watcher.local_sources_watcher import LocalSourcesWatcher
 
 LOGGER = get_logger(__name__)
@@ -240,8 +249,26 @@ class AppSession:
 
         """
         if client_state:
+            page_name = unquote(client_state.page_name).rstrip("/")
+            pages_dir = os.path.join(self._session_data.script_folder, "pages")
+            page_desc = next(
+                filter(
+                    lambda p: p["page_name"] == page_name,
+                    get_pages(pages_dir, self._session_data.script_path),
+                ),
+                None,
+            )
+
+            if page_desc:
+                LOGGER.debug(
+                    f"received rerun request for script at path {page_desc['script_path']}"
+                )
+
             rerun_data = RerunData(
-                client_state.query_string, client_state.widget_states
+                client_state.query_string,
+                client_state.widget_states,
+                client_state.page_name,
+                page_desc["script_path"] if page_desc else "",
             )
         else:
             rerun_data = RerunData()
@@ -385,6 +412,7 @@ class AppSession:
         msg.new_session.name = self._session_data.name
         msg.new_session.script_path = self._session_data.script_path
 
+        _populate_app_pages(msg.new_session, self._session_data)
         _populate_config_msg(msg.new_session.config)
         _populate_theme_msg(msg.new_session.custom_theme)
 
@@ -612,3 +640,11 @@ def _populate_user_info_msg(msg: UserInfo) -> None:
         msg.email = Credentials.get_current().activation.email
     else:
         msg.email = ""
+
+
+def _populate_app_pages(msg: NewSession, session_data: SessionData) -> None:
+    pages_dir = os.path.join(session_data.script_folder, "pages")
+    for page in get_pages(pages_dir, session_data.script_path):
+        page_proto = msg.app_pages.add()
+        page_proto.script_path = page["script_path"]
+        page_proto.page_name = page["page_name"]

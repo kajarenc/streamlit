@@ -1,5 +1,6 @@
 /**
- * Copyright 2018-2022 Streamlit Inc.
+ * @license
+ * Copyright 2018-2021 Streamlit Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-syntax = "proto3";
-
-import "streamlit/proto/WidgetStates.proto";
-
-
-message ClientState {
-  string query_string = 1;
-  WidgetStates widget_states = 2;
-  string page_name = 3;
-}
+export { default } from "./AppNav"

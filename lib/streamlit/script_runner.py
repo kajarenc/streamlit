@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gc
 import sys
 import threading
-import gc
 from contextlib import contextmanager
 from enum import Enum
 from typing import Optional
@@ -179,6 +179,7 @@ class ScriptRunner(object):
             query_string=self._client_state.query_string,
             session_state=self._session_state,
             uploaded_file_mgr=self._uploaded_file_mgr,
+            page_name=self._client_state.page_name,
             user_info=self._user_info,
         )
         add_script_run_ctx(self._script_thread, script_run_ctx)
@@ -238,6 +239,7 @@ class ScriptRunner(object):
         # created.
         client_state = ClientState()
         client_state.query_string = ctx.query_string
+        client_state.page_name = ctx.page_name
         widget_states = self._session_state.as_widget_states()
         client_state.widget_states.widgets.extend(widget_states)
         self.on_event.send(ScriptRunnerEvent.SHUTDOWN, client_state=client_state)
@@ -329,16 +331,31 @@ class ScriptRunner(object):
         # in their previous script elements disappearing.
 
         try:
-            with source_util.open_python_file(self._session_data.script_path) as f:
+            ctx = get_script_run_ctx()
+            if ctx is None:
+                # This should never be possible on the script_runner thread.
+                raise RuntimeError(
+                    "ScriptRunner thread has a null ScriptRunContext. Something has gone very wrong!"
+                )
+
+            # TODO: Maybe move this logic into the start method?
+            if not rerun_data.script_path:
+                script_path = self._session_data.script_path
+                ctx.page_name = ""
+            else:
+                script_path = rerun_data.script_path
+                ctx.page_name = rerun_data.page_name
+
+            with source_util.open_python_file(script_path) as f:
                 filebody = f.read()
 
             if config.get_option("runner.magicEnabled"):
-                filebody = magic.add_magic(filebody, self._session_data.script_path)
+                filebody = magic.add_magic(filebody, script_path)
 
             code = compile(
                 filebody,
                 # Pass in the file path so it can show up in exceptions.
-                self._session_data.script_path,
+                script_path,
                 # We're compiling entire blocks of Python, so we need "exec"
                 # mode (as opposed to "eval" or "single").
                 mode="exec",

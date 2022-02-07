@@ -62,6 +62,16 @@ export const StyledHeaderDecoration = styled.div(({ theme }) => ({
   zIndex: theme.zIndices.header,
 }))
 
+export const StyledHeaderPageNav = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing.sm,
+  left: theme.spacing.lg,
+  height: theme.sizes.headerHeight,
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+}))
+
 export const StyledHeaderToolbar = styled.div(({ theme }) => ({
   position: "absolute",
   top: theme.spacing.none,

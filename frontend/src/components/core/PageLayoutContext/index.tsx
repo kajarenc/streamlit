@@ -16,7 +16,7 @@
  */
 
 import React from "react"
-import { PageConfig } from "src/autogen/proto"
+import { PageConfig, IAppPage } from "src/autogen/proto"
 import { baseTheme, ThemeConfig } from "src/theme"
 
 export interface Props {
@@ -33,6 +33,8 @@ export interface Props {
   availableThemes: ThemeConfig[]
   addThemes: (themes: ThemeConfig[]) => void
   sidebarChevronDownshift: number
+  pages: IAppPage[]
+  currentPage: string
 }
 
 export default React.createContext<Props>({
@@ -49,4 +51,6 @@ export default React.createContext<Props>({
   availableThemes: [],
   addThemes: (themes: ThemeConfig[]) => {},
   sidebarChevronDownshift: 0,
+  pages: [],
+  currentPage: "",
 })

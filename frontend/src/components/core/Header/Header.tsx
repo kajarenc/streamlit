@@ -17,19 +17,27 @@
 
 import React, { ReactElement, ReactNode } from "react"
 import PageLayoutContext from "src/components/core/PageLayoutContext"
+import AppNavMenu from "src/components/core/AppNav"
+
+import { AppRoot } from "src/lib/AppNode"
+
 import {
   StyledHeader,
   StyledHeaderDecoration,
+  StyledHeaderPageNav,
   StyledHeaderToolbar,
 } from "./styled-components"
 
 export interface HeaderProps {
+  elements: AppRoot
   children: ReactNode
   isStale?: boolean
 }
 
-function Header({ isStale, children }: HeaderProps): ReactElement {
-  const { wideMode, embedded } = React.useContext(PageLayoutContext)
+function Header({ elements, isStale, children }: HeaderProps): ReactElement {
+  const { wideMode, embedded, pages, currentPage } = React.useContext(
+    PageLayoutContext
+  )
 
   return (
     <StyledHeader
@@ -40,6 +48,11 @@ function Header({ isStale, children }: HeaderProps): ReactElement {
       isStale={isStale}
     >
       <StyledHeaderDecoration data-testid="stDecoration" />
+      {elements.sidebar.isEmpty && (
+        <StyledHeaderPageNav>
+          <AppNavMenu pages={pages} currentPage={currentPage} />
+        </StyledHeaderPageNav>
+      )}
       <StyledHeaderToolbar data-testid="stToolbar">
         {children}
       </StyledHeaderToolbar>

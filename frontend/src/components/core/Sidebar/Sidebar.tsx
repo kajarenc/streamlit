@@ -16,17 +16,22 @@
  */
 
 import React, { PureComponent, ReactElement } from "react"
-import { ChevronRight, X } from "@emotion-icons/open-iconic"
+import { X } from "@emotion-icons/open-iconic"
 import Icon from "src/components/shared/Icon"
+import { ChevronRight } from "baseui/icon"
 import Button, { Kind } from "src/components/shared/Button"
+import AppNavMenu from "src/components/core/AppNav"
+import PageLayoutContext from "src/components/core/PageLayoutContext"
 import { PageConfig } from "src/autogen/proto"
 import { withTheme } from "emotion-theming"
 import { Theme } from "src/theme"
 import {
   StyledSidebar,
+  StyledSidebarNavContainer,
   StyledSidebarCloseButton,
   StyledSidebarCollapsedControl,
   StyledSidebarContent,
+  StyledDivider,
 } from "./styled-components"
 import IsSidebarContext from "./IsSidebarContext"
 
@@ -49,6 +54,8 @@ class Sidebar extends PureComponent<SidebarProps, State> {
     // We subtract a margin of 0.02 to use as a max-width
     return parseInt(value, 10) - 0.02
   }
+
+  static contextType = PageLayoutContext
 
   private sidebarRef = React.createRef<HTMLDivElement>()
 
@@ -147,6 +154,7 @@ class Sidebar extends PureComponent<SidebarProps, State> {
   public render = (): ReactElement => {
     const { collapsedSidebar } = this.state
     const { chevronDownshift, children } = this.props
+    const { pages, currentPage } = this.context
 
     // The tabindex is required to support scrolling by arrow keys.
     return (
@@ -156,6 +164,9 @@ class Sidebar extends PureComponent<SidebarProps, State> {
         ref={this.sidebarRef}
       >
         <StyledSidebarContent isCollapsed={collapsedSidebar}>
+          <StyledSidebarNavContainer>
+            <AppNavMenu pages={pages} currentPage={currentPage} />
+          </StyledSidebarNavContainer>
           <StyledSidebarCloseButton>
             <Button kind={Kind.ICON} onClick={this.toggleCollapse}>
               <Icon content={X} />
@@ -167,8 +178,11 @@ class Sidebar extends PureComponent<SidebarProps, State> {
           chevronDownshift={chevronDownshift}
           isCollapsed={collapsedSidebar}
         >
+          <AppNavMenu pages={pages} currentPage={currentPage} />
+          <StyledDivider />
           <Button kind={Kind.ICON} onClick={this.toggleCollapse}>
-            <Icon content={ChevronRight} />
+            Sidebar
+            <ChevronRight size={24} />
           </Button>
         </StyledSidebarCollapsedControl>
       </StyledSidebar>

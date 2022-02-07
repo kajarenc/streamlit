@@ -111,6 +111,13 @@ export const StyledSidebarContent = styled.div<StyledSidebarContentProps>(
     },
   })
 )
+export const StyledSidebarNavContainer = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing.sm,
+  left: theme.spacing.xs,
+  zIndex: 1,
+  padding: `${theme.spacing.md} ${theme.spacing.twoXS}`,
+}))
 
 export const StyledSidebarCloseButton = styled.div(({ theme }) => ({
   position: "absolute",
@@ -135,9 +142,15 @@ export const StyledSidebarCollapsedControl = styled.div<
   transition: "left 300ms",
   transitionDelay: "left 300ms",
 
-  color: theme.colors.fadedText40,
+  color: theme.colors.bodyText,
 
   [`@media (max-width: ${theme.breakpoints.md})`]: {
     color: theme.colors.bodyText,
   },
+}))
+
+export const StyledDivider = styled.div(({ theme }) => ({
+  display: "inline",
+  borderLeft: "2px solid #D5DAE5",
+  margin: `0 ${theme.spacing.xs}`,
 }))

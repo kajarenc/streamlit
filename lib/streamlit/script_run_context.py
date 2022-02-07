@@ -44,6 +44,7 @@ class ScriptRunContext:
     query_string: str
     session_state: SessionState
     uploaded_file_mgr: UploadedFileManager
+    page_name: str
     user_info: attr.Factory(dict)
 
     _set_page_config_allowed: bool = True
