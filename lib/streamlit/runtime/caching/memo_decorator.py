@@ -23,6 +23,7 @@ from typing import Optional, Any, Dict, cast, List, Callable, TypeVar, overload,
 
 import math
 from cachetools import TTLCache
+from datetime import timedelta
 
 import streamlit as st
 from streamlit import util
@@ -220,7 +221,7 @@ class MemoAPI:
         show_spinner: bool = True,
         suppress_st_warning: bool = False,
         max_entries: Optional[int] = None,
-        ttl: Optional[float] = None,
+        ttl: Optional[Union[float, timedelta]] = None,
     ) -> Callable[[F], F]:
         ...
 
@@ -236,7 +237,7 @@ class MemoAPI:
         show_spinner: bool = True,
         suppress_st_warning: bool = False,
         max_entries: Optional[int] = None,
-        ttl: Optional[float] = None,
+        ttl: Optional[Union[float, timedelta]] = None,
     ):
         """Function decorator to memoize function executions.
 
@@ -338,6 +339,9 @@ class MemoAPI:
                 f"Unsupported persist option '{persist}'. Valid values are 'disk' or None."
             )
 
+        if isinstance(ttl, timedelta):
+            ttl = ttl.seconds
+
         def wrapper(f):
             # We use wrapper function here instead of lambda function to be able to log
             # warning in case both persist="disk" and ttl parameters specified
@@ -353,7 +357,7 @@ class MemoAPI:
                     show_spinner=show_spinner,
                     suppress_st_warning=suppress_st_warning,
                     max_entries=max_entries,
-                    ttl=ttl,
+                    ttl=cast(float, ttl),
                 )
             )
 
